@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Louise</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell" aria-label="Louise browsergame">
+    <section class="game-card">
+      <canvas id="gameCanvas" aria-label="Speelveld"></canvas>
+
+      <div class="hud">
+        <div class="stat-row">
+          <div class="stat"><small>Score</small><span id="scoreText">0</span></div>
+          <div class="stat"><small>Highscore</small><span id="highScoreText">0</span></div>
+          <div class="stat"><small>Barricades</small><span id="livesText">0/3</span></div>
+          <button type="button" id="musicButton">Muziek aan</button>
+        </div>
+        <div class="stat status-pill" id="statusText">Melody zit achter Louise aan.</div>
+      </div>
+
+      <div class="touch-controls" aria-label="Touch besturing">
+        <button type="button" class="touch-up" data-dir="up" aria-label="Spring">JUMP</button>
+        <button type="button" class="touch-left" data-dir="left" aria-label="Links">LEFT</button>
+        <button type="button" class="touch-right" data-dir="right" aria-label="Rechts">RIGHT</button>
+        <button type="button" class="touch-down" data-dir="fire" aria-label="Schiet make-up">FIRE</button>
+      </div>
+
+      <p class="asset-note">
+        Assets naast dit bestand: speler.png, gezicht1.png, koek.png, chocolade.png en zeevruchten.png.
+        Melody wordt in de game als zwarte kat getekend.
+      </p>
+
+      <div class="overlay" id="startOverlay">
+        <div class="dialog">
+          <h1>Louise</h1>
+          <p class="subtitle">
+            Louise rent weg van Melody de kat. Spring over barricades en schiet make-up met F of FIRE.
+            Pak koekjes, chocola en zeevruchten als powerups. Na drie botsingen haalt Melody haar in.
+          </p>
+          <div class="map-picker" id="mapPicker" aria-label="Kies map">
+            <button type="button" class="map-option active" data-map="stad">Stad</button>
+            <button type="button" class="map-option" data-map="strand">Strand</button>
+            <button type="button" class="map-option" data-map="snoep">Snoep</button>
+          </div>
+          <div class="button-row">
+            <button type="button" id="startButton">Start spel</button>
+            <button type="button" class="secondary" id="howButton">Snelle regels</button>
+          </div>
+          <div class="tips" id="tips" hidden>
+            <div class="tip"><b>Wapen</b>F of FIRE schiet lippenstift en blush naar barricades.</div>
+            <div class="tip"><b>Powerups</b>koek geeft schild, zeevruchten geven magneet, chocola versnelt.</div>
+            <div class="tip"><b>Melody</b>komt dichterbij bij elke botsing. Bij 3 is het game over.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="gameOverOverlay" hidden>
+        <div class="dialog">
+          <h2>Game over</h2>
+          <p class="subtitle" id="gameOverText">Je score: 0</p>
+          <div class="button-row">
+            <button type="button" id="restartButton">Nog een ronde</button>
+            <button type="button" class="secondary" id="menuButton">Terug naar start</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
