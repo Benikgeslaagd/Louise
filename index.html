@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="nl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Louise Game</title>
+  <meta name="description" content="Speel Louise: ren weg van Melody de kat, ontwijk lava en muren en gebruik powerups.">
+  <meta property="og:title" content="Louise Game">
+  <meta property="og:description" content="Ren weg van Melody de kat, ontwijk lava en muren en gebruik powerups.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="speler.png">
+  <meta name="theme-color" content="#ffd6ea">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23ffd6ea'/%3E%3Ccircle cx='32' cy='30' r='18' fill='%23ffe66d'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-size='26' font-family='Arial' font-weight='900' fill='%23231f35'%3EL%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main class="game-shell" aria-label="Louise browsergame">
+    <section class="game-card">
+      <canvas id="gameCanvas" aria-label="Speelveld"></canvas>
+
+      <div class="hud" aria-label="Game status">
+        <div class="stat-row">
+          <div class="stat"><small>Score</small><span id="scoreText">0</span></div>
+          <div class="stat"><small>Record</small><span id="highScoreText">0</span></div>
+          <div class="stat life-stat">
+            <small>Botsingen</small>
+            <span id="livesText">0/3</span>
+            <span class="life-bar" aria-hidden="true"><span id="lifeBarFill"></span></span>
+          </div>
+          <div class="stat"><small>Powerup</small><span id="powerupText">30s</span></div>
+        </div>
+        <div class="hud-actions">
+          <button type="button" id="pauseButton" class="mini-button">Pauze</button>
+          <button type="button" id="musicButton" class="mini-button">Mute</button>
+        </div>
+      </div>
+
+      <div class="touch-controls" aria-label="Touch besturing">
+        <button type="button" data-action="jump" aria-label="Spring">JUMP</button>
+        <button type="button" data-action="duck" aria-label="Duik">DUCK</button>
+        <button type="button" data-action="fire" aria-label="Schiet make-up">FIRE</button>
+      </div>
+
+      <div class="mobile-help">Spatie/tik = springen, omlaag = duiken, F = schieten</div>
+
+      <div class="toast" id="statusText" aria-live="polite">Kies een map en druk op Start.</div>
+
+      <div class="overlay" id="startOverlay">
+        <div class="dialog start-dialog">
+          <p class="eyebrow">Runner game</p>
+          <h1>Louise Game</h1>
+          <p class="subtitle">Ren weg van Melody. Spring over muren en lava, duik onder plafondmuren en schiet make-up naar kleine katten.</p>
+
+          <div class="choice-block">
+            <span>Moeilijkheid</span>
+            <div class="pill-picker" id="difficultyPicker">
+              <button type="button" class="difficulty-option" data-difficulty="easy">Easy</button>
+              <button type="button" class="difficulty-option active" data-difficulty="normal">Normal</button>
+              <button type="button" class="difficulty-option" data-difficulty="hard">Hard</button>
+            </div>
+          </div>
+
+          <div class="choice-block">
+            <span>Map</span>
+            <div class="pill-picker" id="mapPicker">
+              <button type="button" class="map-option active" data-map="stad">Stad</button>
+              <button type="button" class="map-option" data-map="strand">Strand</button>
+              <button type="button" class="map-option" data-map="snoep">Snoep</button>
+            </div>
+          </div>
+
+          <div class="key-help">Spatie = springen | Omlaag = duiken | F = schieten</div>
+
+          <div class="button-row">
+            <button type="button" id="startButton" class="primary-action">Start spel</button>
+            <button type="button" class="secondary" id="howButton">Hoe speel je?</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="howOverlay" hidden>
+        <div class="dialog small-dialog">
+          <h2>Hoe speel je?</h2>
+          <p class="subtitle">Pak munten en zeldzame powerups. Raak je 3 keer een barricade of lava, dan haalt Melody je in. Kleine katten stop je met FIRE.</p>
+          <div class="how-grid">
+            <div><b>JUMP</b><span>over lage muren en lava</span></div>
+            <div><b>DUCK</b><span>onder plafondmuren</span></div>
+            <div><b>FIRE</b><span>make-up tegen kleine katten</span></div>
+          </div>
+          <div class="button-row">
+            <button type="button" id="closeHowButton">Terug</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay countdown-overlay" id="countdownOverlay" hidden>
+        <div id="countdownText" class="countdown-text">3</div>
+      </div>
+
+      <div class="overlay" id="pauseOverlay" hidden>
+        <div class="dialog small-dialog">
+          <h2>Pauze</h2>
+          <p class="subtitle">Even ademhalen. Louise wacht op je.</p>
+          <div class="button-row">
+            <button type="button" id="resumeButton">Verder</button>
+            <button type="button" class="secondary" id="restartPauseButton">Opnieuw</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="gameOverOverlay" hidden>
+        <div class="dialog small-dialog">
+          <p class="eyebrow">Melody won</p>
+          <h2>Game over</h2>
+          <p class="record" id="recordText" hidden>Nieuw record!</p>
+          <div class="score-card">
+            <span id="finalScoreText">Score: 0</span>
+            <span id="finalHighScoreText">Highscore: 0</span>
+          </div>
+          <p class="subtitle" id="gameOverText">Probeer nog een rondje.</p>
+          <div class="button-row">
+            <button type="button" id="restartButton">Opnieuw spelen</button>
+            <button type="button" class="secondary" id="menuButton">Startscherm</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
